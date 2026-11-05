@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>看这春夏秋冬</title>
+<style type="text/css">
+@media screen{
+.dhl {
+    border: 0;
+}
+}
+.bq {
+}
+.bj {
+}
+body {
+    background-image: url(12.gif);
+    background-repeat: repeat;
+}
+	iframe{
+		border: none;
+	}
+</style>
+</head>
+
+<body>
+<table width="1200" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td height="18" colspan="4" class="bj"><a href="../index.html">首页<iframe src="../logo.html" width="1200" scrolling="no" ></iframe></a></td>
+    </tr>
+    <tr> 
+      <td height="68" colspan="4"><iframe src="../导航栏.html" width="1200" scrolling="no"></iframe>&nbsp;</td>
+    </tr>
+    <tr>
+      <td height="87" colspan="4">
+		<!DOCTYPE html>
+
+
+<style type="text/css">
+    /* 
+     * 将样式放在这里，而不是内联在HTML标签里，
+     * 这是更规范的做法，也便于在Dreamweaver的CSS设计器中管理。
+     */
+    #demo {
+        overflow: hidden;
+        height: 200px;
+        width: 1200px;
+        border: 1px solid #ccc; 
+    }
+    #indemo {
+        float: left;
+        width: 200%; 
+    }
+    #demo1, #demo2 {
+        float: left;
+    }
+    #demo img {
+        width: 200px; 
+        height: 200px;
+        display: block; 
+        float: left; 
+    }
+</style>
+
+<body>
+
+<div id="demo">
+    <div id="indemo">
+        <div id="demo1">
+         
+            <a href="#"><img src="江西的山/井冈山.jpg" alt="图片1"></a>
+            <a href="#"><img src="江西的山/明月山.jpg" alt="图片2"></a>
+            <a href="#"><img src="江西的山/武夷山.jpg" alt="图片3"></a>
+            <a href="#"><img src="江西的山/鞋山.jpg" alt="图片4"></a>
+            <a href="#"><img src="江西的山/龟峰.jpg" alt="图片5"></a>
+			   <a href="#"><img src="江西的山/井冈山.jpg" alt="图片1"></a>
+            <a href="#"><img src="江西的山/明月山.jpg" alt="图片2"></a>
+            <a href="#"><img src="江西的山/武夷山.jpg" alt="图片3"></a>
+            <a href="#"><img src="江西的山/鞋山.jpg" alt="图片4"></a>
+            <a href="#"><img src="江西的山/龟峰.jpg" alt="图片5"></a>
+        </div>
+        <div id="demo2"></div>
+    </div>
+</div>
+
+<script>
+    
+    var speed = 10;
+
+    
+    var tab = document.getElementById("demo");
+    var tab1 = document.getElementById("demo1");
+    var tab2 = document.getElementById("demo2");
+
+   
+    tab2.innerHTML = tab1.innerHTML;
+
+    
+    function Marquee() {
+        
+        if (tab.scrollLeft >= tab1.offsetWidth) {
+            
+            tab.scrollLeft = 0;
+        } else {
+            
+            tab.scrollLeft++;
+        }
+    }
+
+    
+    var MyMar = setInterval(Marquee, speed);
+
+    
+    tab.onmouseover = function () {
+        clearInterval(MyMar);
+    };
+
+    
+    tab.onmouseout = function () {
+        MyMar = setInterval(Marquee, speed);
+    };
+</script>
+
+</body>
+</html>
+		</td>
+    </tr>
+	<tr>
+	  <td width="141"><img src="四座山/1.jpg" width="300" height="500" alt=""/></td>
+	  <td width="142"><img src="四座山/2.jpg" width="300" height="500" alt=""/></td>
+	  <td width="141"><img src="四座山/3.jpg" width="300" height="500" alt=""/></td>
+	  <td width="776"><img src="四座山/4.jpg" width="300" height="500" alt=""/></td>
+	</tr>
+    <tr>
+      <td colspan="4">&nbsp;
+      <iframe class="bq" src="../版权信息.html" width="1200" scrolling="no"></iframe></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>
