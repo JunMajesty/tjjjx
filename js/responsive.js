@@ -1,26 +1,34 @@
 /* 手机上让 iframe 自己长高
-   原站用一个 6000px 高的 iframe 硬撑内容，宽度一收窄就会被裁掉。
-   这里只在小屏生效：读 iframe 里文档的实际高度，回写到 iframe 上。
-   同源页面才能读到 contentDocument，跨域的会静默跳过。 */
+   原站用一个 6000px 高的 iframe 硬撑内容，宽度一收窄内容就被裁掉。
+   只在小屏生效：读 iframe 文档里最后一个元素的底边，回写成 iframe 高度。
+   不能用 scrollHeight —— 它至少等于 iframe 视口高（默认 150），
+   像"横向标签条"这种只有 40px 的菜单会被撑出 110px 空白。 */
 (function () {
     var BREAK = 820;
-    var timers = [];
 
-    function scrollH(doc) {
-        var b = doc.body, h = doc.documentElement;
-        return Math.max(
-            b ? b.scrollHeight : 0,
-            b ? b.offsetHeight : 0,
-            h ? h.scrollHeight : 0,
-            h ? h.offsetHeight : 0
-        );
+    function contentH(doc) {
+        var b = doc.body;
+        if (!b) return 0;
+        var max = 0;
+        for (var i = 0; i < b.children.length; i++) {
+            var el = b.children[i];
+            var tag = el.tagName;
+            if (tag === "SCRIPT" || tag === "STYLE" || tag === "LINK" ||
+                tag === "META" || tag === "NOSCRIPT") continue;
+            var r = el.getBoundingClientRect();
+            if (r.height > 0 && r.bottom > max) max = r.bottom;
+        }
+        if (max < 20) {
+            max = Math.max(b.scrollHeight || 0, doc.documentElement.scrollHeight || 0);
+        }
+        return Math.ceil(max + 10);
     }
 
     function fit(f) {
         try {
             var doc = f.contentDocument;
-            if (!doc || !doc.documentElement) return;
-            var h = scrollH(doc);
+            if (!doc || !doc.documentElement || !doc.body) return;
+            var h = contentH(doc);
             if (!h) return;
             var cur = parseFloat(f.style.height) || 0;
             if (Math.abs(cur - h) > 4) f.style.height = h + "px";
@@ -31,7 +39,7 @@
         try {
             var body = f.contentDocument && f.contentDocument.body;
             if (!body || !window.ResizeObserver) return;
-            if (f.__ro) f.__ro.disconnect();  // iframe 换页后旧文档已失效，重新挂
+            if (f.__ro) f.__ro.disconnect();  // iframe 换页后旧文档已失效
             var ro = new ResizeObserver(function () { fit(f); });
             ro.observe(body);
             f.__ro = ro;
@@ -85,10 +93,7 @@
     function boot() {
         bind();
         apply();
-        // 图片是懒加载/慢网时高度会二次变化，补几拍
-        [400, 1000, 2500].forEach(function (t) {
-            timers.push(setTimeout(apply, t));
-        });
+        [400, 1000, 2500].forEach(function (t) { setTimeout(apply, t); });
     }
 
     var rt;

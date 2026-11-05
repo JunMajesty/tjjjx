@@ -1,7 +1,9 @@
 @charset "utf-8";
 /* ==========================================================================
-   响应式补丁 —— 原站是 Dreamweaver 时代定宽 1200px 的表格布局
-   这里不动结构，只做"宽屏保持原样、窄屏自动收窄"的覆盖
+   响应式补丁 v2 —— 保真重排
+   原站是 1200px 定宽的表格站。宽屏版式保持原样；小屏不做成另一个网站，
+   尽量保留「页头横排 / 按钮原比例 / 图片居中留白 / 四图并排」这些视觉特征，
+   只把手机上真的没法用的地方收窄。
    ========================================================================== */
 
 html {
@@ -14,7 +16,7 @@ body {
     overflow-x: hidden;
 }
 
-/* 所有表格原本靠 width="1200" 撑开，加 max-width 后宽屏仍是 1200，窄屏自动收 */
+/* 表格不许把页面撑破；宽屏下仍是原本的 1200 */
 table {
     max-width: 100% !important;
     border-collapse: collapse;
@@ -36,7 +38,7 @@ iframe {
     border: 0;
 }
 
-/* 山美/shanmei.html 里内嵌的跑马灯，宽度写死 1200px */
+/* 山美总览页的跑马灯宽度写死 1200 */
 #demo {
     width: 100% !important;
 }
@@ -45,8 +47,7 @@ iframe {
     max-width: none;
 }
 
-/* 顶部四个频道的按钮：原来是 4 个 298px 的表格单元格里塞 290×68 的图
-   换成 grid 之后桌面上仍是四等分，手机上变两行两列 */
+/* 四个频道按钮：桌面四等分，按钮图片保持原始比例、居中，不拉伸 */
 .navbar {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -55,19 +56,21 @@ iframe {
 .navbar a {
     display: block;
     line-height: 0;
+    text-align: center;
 }
 
 .navbar img {
     display: block;
-    width: 100%;
-    height: auto;
+    width: auto;
+    max-width: 100%;
+    height: auto !important;
+    margin: 0 auto;
 }
 
-/* 手机端 */
+/* ============================ 手机端 ============================ */
 @media (max-width: 820px) {
-    /* 关键：整站是表格布局，表格的每列会被内容撑开（4 张 290px 的图就是 1160px），
-       浏览器只好把整页缩小来塞，字就变得极小。
-       小屏下干脆把 table/tr/td 全部降级成 block，让它们按普通流往下排。 */
+    /* 表格会被内容撑到最小 1160px，只加 max-width 浏览器会把整页缩小塞进屏幕。
+       降级成块流是最可靠的解法，下面再把关键部位逐个"还原"回桌面的排法。 */
     table,
     tbody,
     thead,
@@ -85,34 +88,132 @@ iframe {
     th {
         padding-left: 2px;
         padding-right: 2px;
+        word-break: break-word;
+    }
+
+    /* 图片不贴边，保留桌面上居中留白的感觉 */
+    img,
+    video {
+        max-width: 92%;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .navbar {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    /* 频道页：左菜单 + 右内容 两栏改成一上一下 */
+    .navbar img {
+        max-width: 100%;
+    }
+
+    /* 页头标题：桌面是 30px 配 1016px 宽，手机上按比例收一点，别把整行撑爆 */
+    .sydhfont {
+        font-size: 20px;
+    }
+
+    .bjdhzt {
+        font-size: 13px;
+    }
+
+    /* ① 页头：logo 在左、中英文标题在右，跟桌面一样横排 */
+    table.header {
+        display: table !important;
+        table-layout: fixed;
+    }
+
+    table.header > tbody {
+        display: table-row-group !important;
+        width: auto !important;
+    }
+
+    table.header > tbody > tr {
+        display: table-row !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    table.header > tbody > tr > td {
+        display: table-cell !important;
+        width: auto !important;
+        height: auto !important;
+        vertical-align: middle;
+        padding: 2px;
+    }
+
+    table.header > tbody > tr > td:first-child {
+        width: 22% !important;
+    }
+
+    table.header > tbody > tr > td:last-child {
+        width: 78% !important;
+    }
+
+    table.header img {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    /* ② 频道页左侧菜单：从竖排一整列变成可横滑的标签条 */
+    table.menu {
+        display: flex !important;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table.menu > tbody {
+        display: flex !important;
+        width: auto !important;
+        flex: 0 0 auto;
+    }
+
+    table.menu > tbody > tr {
+        display: block !important;
+        width: auto !important;
+        flex: 0 0 auto;
+    }
+
+    table.menu > tbody > tr > td {
+        display: block !important;
+        width: auto !important;
+        height: auto !important;
+        padding: 6px 12px;
+        white-space: nowrap;
+    }
+
+    /* ③ 山美总览页的四张竖图：仍是一排四张 */
+    tr.fourpics {
+        display: flex !important;
+        width: 100% !important;
+    }
+
+    tr.fourpics > td {
+        display: block !important;
+        width: 25% !important;
+        padding: 1px;
+    }
+
+    tr.fourpics img {
+        width: 100% !important;
+        max-width: none;
+        margin: 0;
+    }
+
+    /* ④ 频道页左菜单 + 右内容上下堆叠（菜单现在只有一条标签高） */
     .stackrow > td {
         display: block;
         width: 100% !important;
         height: auto !important;
     }
 
-    /* 正文里的表格、图片一律铺满，不要留 1200 的虚宽 */
-    td {
-        word-break: break-word;
+    .stackrow > td:last-child {
+        padding: 0 6px;
     }
 
-    /* 标题别太大，手机上一行放不下 */
     h1 {
         font-size: 1.25rem;
         line-height: 1.5;
-    }
-
-    /* 频道页正文两侧留一点边距 */
-    .stackrow > td:last-child {
-        padding: 0 6px;
-        box-sizing: border-box;
     }
 }
 
@@ -121,7 +222,6 @@ iframe {
         font-size: 15px;
     }
 
-    /* 首页那些 500 宽的配图在手机上要留住气口 */
     .syzw {
         padding: 0 10px;
     }
