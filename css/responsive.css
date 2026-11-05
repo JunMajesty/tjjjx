@@ -1,0 +1,128 @@
+@charset "utf-8";
+/* ==========================================================================
+   响应式补丁 —— 原站是 Dreamweaver 时代定宽 1200px 的表格布局
+   这里不动结构，只做"宽屏保持原样、窄屏自动收窄"的覆盖
+   ========================================================================== */
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* 所有表格原本靠 width="1200" 撑开，加 max-width 后宽屏仍是 1200，窄屏自动收 */
+table {
+    max-width: 100% !important;
+    border-collapse: collapse;
+}
+
+img,
+video,
+iframe {
+    max-width: 100%;
+}
+
+img,
+video {
+    height: auto !important;
+}
+
+iframe {
+    display: block;
+    border: 0;
+}
+
+/* 山美/shanmei.html 里内嵌的跑马灯，宽度写死 1200px */
+#demo {
+    width: 100% !important;
+}
+
+#demo img {
+    max-width: none;
+}
+
+/* 顶部四个频道的按钮：原来是 4 个 298px 的表格单元格里塞 290×68 的图
+   换成 grid 之后桌面上仍是四等分，手机上变两行两列 */
+.navbar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.navbar a {
+    display: block;
+    line-height: 0;
+}
+
+.navbar img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* 手机端 */
+@media (max-width: 820px) {
+    /* 关键：整站是表格布局，表格的每列会被内容撑开（4 张 290px 的图就是 1160px），
+       浏览器只好把整页缩小来塞，字就变得极小。
+       小屏下干脆把 table/tr/td 全部降级成 block，让它们按普通流往下排。 */
+    table,
+    tbody,
+    thead,
+    tfoot,
+    tr,
+    td,
+    th {
+        display: block;
+        width: 100% !important;
+        height: auto !important;
+        box-sizing: border-box;
+    }
+
+    td,
+    th {
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    .navbar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 频道页：左菜单 + 右内容 两栏改成一上一下 */
+    .stackrow > td {
+        display: block;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    /* 正文里的表格、图片一律铺满，不要留 1200 的虚宽 */
+    td {
+        word-break: break-word;
+    }
+
+    /* 标题别太大，手机上一行放不下 */
+    h1 {
+        font-size: 1.25rem;
+        line-height: 1.5;
+    }
+
+    /* 频道页正文两侧留一点边距 */
+    .stackrow > td:last-child {
+        padding: 0 6px;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 15px;
+    }
+
+    /* 首页那些 500 宽的配图在手机上要留住气口 */
+    .syzw {
+        padding: 0 10px;
+    }
+}
